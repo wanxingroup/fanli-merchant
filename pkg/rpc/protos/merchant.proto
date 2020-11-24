@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+package merchant.pkg.rpc.protos;
+
+option go_package = "protos";
+
+import "merchant_common.proto";
+
+service MerchantController {
+    // 注册商家用户
+    rpc RegisterUser (RegisterUserRequest) returns (RegisterUserReply) {
+    }
+    // 判断商家用户密码是否正确
+    rpc ValidatePassword (ValidatePasswordRequest) returns (ValidatePasswordReply) {
+    }
+    // 获取商家信息
+    rpc GetMerchant (GetMerchantRequest) returns (GetMerchantReply) {
+    }
+    // 获取商家列表
+    rpc GetMerchantList (GetMerchantListRequest) returns (GetMerchantListReply) {
+    }
+    // 修改商家信息
+    rpc ModifyMerchant (ModifyMerchantRequest) returns (ModifyMerchantReply) {
+    }
+    // 记录验证码
+    rpc RecordCode(RecordCodeRequest) returns (RecordCodeReply){
+    }
+    // 修改密码[带校验密码]
+    rpc ModifyPasswordWithCode(ModifyPasswordWithCodeRequest) returns (ModifyPasswordWithCodeReply){
+    }
+    // 修改密码
+    rpc ModifyPassword (ModifyPasswordRequest) returns (ModifyPasswordReply) {
+    }
+    // 修改状态
+    rpc SetStatus (SetStatusRequest) returns (SetStatusReply) {
+    }
+}
+
+enum MerchantStatus {
+    MerchantStatusDefault  = 0;    // 默认
+    MerchantStatusOpen     = 1;    // 开启
+    MerchantStatusClose    = 2;    // 禁用
+}
+
+message SetStatusRequest {
+    uint64 merchantId = 1;
+    MerchantStatus status = 2;
+}
+
+message SetStatusReply {
+    Error err = 1;
+    bool isSuccess = 2;
+}
+
+message RegisterUserRequest {
+    string mobile = 1;
+    string password = 2;
+    string name = 3;
+    string area = 4;
+    string managementCentre = 5;
+    string networkStation = 6;
+    MerchantStatus status = 7;
+    bool isRebate = 8;
+}
+
+message RegisterUserReply {
+    Error err = 1;
+    uint64 merchantId = 2;
+}
+
+message ValidatePasswordRequest {
+    string mobile = 1;
+    string password = 2;
+}
+
+message ValidatePasswordReply {
+    Error err = 1;
+    bool pass = 2;
+    uint64 merchantId = 3;
+}
+
+message GetMerchantRequest {
+    uint64 merchantId = 1;
+}
+
+message GetMerchantReply {
+    Merchant merchant = 1;
+    Error err = 2;
+}
+
+message GetMerchantListRequest {
+    // 页码
+    uint64 page = 1;
+    // 分页大小
+    uint64 pageSize = 2;
+    // 商户ID
+    uint64 merchantId = 3;
+    // 手机号(模糊搜索)
+    string mobileFuzzySearch = 4;
+    // 名称搜索（模糊搜索）
+    string nameFuzzySearch = 5;
+    // 区域
+    string area = 6;
+    // 管理中心
+    string managementCentre = 7;
+    // 网点(模糊搜索)
+    string networkStationFuzzySearch = 8;
+}
+
+message GetMerchantListReply {
+    Error err = 1;
+    repeated Merchant merchantList = 2;
+    uint64 count = 3;
+}
+
+message Merchant {
+    // 手机号
+    string mobile = 1;
+    // merchantId
+    uint64 merchantId = 2;
+    // 名字
+    string name = 3;
+    // 区域
+    string area = 4;
+    // 管理中心
+    string managementCentre = 5;
+    // 网点
+    string networkStation = 6;
+    // 状态： 1 => 正常；2 => 禁用
+    MerchantStatus status = 7;
+    // 是否返利
+    bool isRebate = 8;
+}
+
+message ModifyMerchantRequest {
+    string mobile = 1;
+    uint64 merchantId = 2;
+    string name = 3;
+    string area = 4;
+    string managementCentre = 5;
+    string networkStation = 6;
+    MerchantStatus status = 7;
+    bool isRebate = 8;
+    string password = 9;
+}
+
+message ModifyMerchantReply {
+    Error err = 1;
+    Merchant merchant = 2;
+}
+
+message RecordCodeRequest{
+    string mobile = 1;
+    string code = 2;
+    string expiredAt = 3;
+}
+
+message RecordCodeReply{
+    Error err = 1;
+    uint64 RecordId = 2;
+}
+
+message ModifyPasswordWithCodeRequest{
+    string mobile = 1;
+    string code = 2;
+    string password = 3;
+}
+
+message ModifyPasswordWithCodeReply{
+    Error err = 1;
+    bool isSuccess = 2;
+}
+message ModifyPasswordRequest {
+    uint64 merchantId = 1;
+    string password = 2;
+}
+
+message ModifyPasswordReply {
+    Error err = 1;
+    Merchant merchant = 2;
+}

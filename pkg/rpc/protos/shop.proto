@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package merchant.pkg.rpc.protos;
+
+option go_package = "protos";
+
+import "merchant_common.proto";
+
+
+service ShopController{
+    // 商家店铺创建
+    rpc CreateShop (CreateShopRequest) returns (CreateShopReply) {
+    }
+    // 商铺列表
+    rpc GetShopList (GetShopListRequest) returns (GetShopListReply) {
+    }
+    // 商铺详情
+    rpc GetShopInfo (GetShopInfoRequest) returns (GetShopInfoReply) {
+    }
+    // 修改商铺
+    rpc ModifyShopInfo (ModifyShopInfoRequest) returns (ModifyShopReply) {
+    }
+    // 校验该用户是否是该商铺的核销员
+    rpc CheckMobileAccess (CheckMobileAccessRequest) returns (CheckMobileAccessReply) {
+    }
+}
+
+enum ShopStatus {
+    ShopStatusDefault  = 0;    // 默认
+    ShopStatusOpen     = 1;    // 开启
+    ShopStatusClose    = 2;    // 禁用
+}
+
+message ShopInfo{
+    uint64 shopId = 1;
+    string name = 2;
+    int64 businessHoursStart = 3;
+    int64 businessHoursEnd = 4;
+    ShopStatus shopStatus = 5;
+    int64 shopType = 6;
+    uint64 merchantId = 7;
+    string createdAt = 8;
+    string updatedAt = 9;
+    repeated string verifierMobiles = 10;
+    string fuYouMerchantId = 11;
+    bool isRebate = 12;
+}
+
+message CreateShopRequest {
+    uint64 merchantId = 1;
+    string name = 2;
+    int64 businessHoursStart = 3;
+    int64 businessHoursEnd = 4;
+    ShopStatus shopStatus = 5;
+    int64 shopType = 6;
+    repeated string verifierMobiles = 7;
+    string fuYouMerchantId = 8;
+    bool isRebate = 9;
+
+}
+message CreateShopReply {
+    Error err = 1;
+    uint64 shopId = 2;
+}
+message GetShopListRequest{
+    uint64 merchantId = 1;
+    ShopStatus shopStatus = 2;
+    uint64 shopId = 3;
+    uint64 page = 4;
+    uint64 pageSize = 5;
+    string shopName = 6;
+}
+message GetShopListReply{
+    Error err = 1;
+    repeated ShopInfo ShopList = 2;
+    uint64 count = 3;
+}
+message GetShopInfoRequest{
+    uint64 shopId = 1;
+}
+message GetShopInfoReply{
+    ShopInfo ShopInfo = 1;
+    Error err = 2;
+}
+message ModifyShopInfoRequest{
+    string name = 1;
+    int64 businessHoursStart = 2;
+    int64 businessHoursEnd = 3;
+    ShopStatus shopStatus = 4;
+    int64 shopType = 5;
+    uint64 shopId = 6;
+    uint64 merchantId = 7;
+    repeated string verifierMobiles = 8;
+    string fuYouMerchantId = 9;
+    bool isRebate = 10;
+
+}
+message ModifyShopReply {
+    Error err = 1;
+    uint64 shopId = 2;
+}
+message CheckMobileAccessRequest{
+    string mobile = 1;
+    uint64 shopId = 2;
+}
+message CheckMobileAccessReply{
+    Error err = 1;
+    bool isVerifier = 2;
+}

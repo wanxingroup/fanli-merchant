@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package merchant.pkg.rpc.protos;
+
+option go_package = "protos";
+
+import "merchant_common.proto";
+
+service StaffController{
+
+    // 获取员工信息
+    rpc Get (GetStaffInfoRequest) returns (GetStaffInfoReply) {
+    }
+    // 获取员工列表
+    rpc GetList (GetStaffListRequest) returns (GetStaffListReply) {
+    }
+    // 创建
+    rpc Create (CreateStaffInfoRequest) returns (CreateStaffInfoReply) {
+    }
+    // 修改
+    rpc Modify (ModifyStaffInfoRequest) returns (ModifyStaffInfoReply) {
+    }
+    // 删除
+    rpc Remove (RemoveStaffRequest) returns (RemoveStaffReply) {
+    }
+}
+
+enum StaffStatus {
+    StaffStatusDefault  = 0;    // 默认
+    StaffStatusOpen     = 1;    // 开启
+    StaffStatusClose    = 2;    // 禁用
+}
+
+message StaffInfo{
+    uint64 staffId = 1;
+    uint64 shopId = 2;
+    string name = 3;
+    string mobile = 4;
+    string createdAt = 5;
+    string updatedAt = 6;
+    bool isRebate = 7;
+    StaffStatus status = 8;
+}
+
+message CreateStaffInfoRequest {
+    uint64 shopId = 1;
+    string name = 2;
+    string mobile = 3;
+    bool isRebate = 4;
+    StaffStatus status = 5;
+}
+
+message CreateStaffInfoReply {
+    Error err = 1;
+    StaffInfo staffInfo = 2;
+}
+
+message GetStaffListRequest{
+    uint64 shopId = 1;
+    uint64 page = 2;
+    uint64 pageSize = 3;
+    string userName = 4;
+}
+message GetStaffListReply{
+    Error err = 1;
+    repeated StaffInfo StaffList = 2;
+    uint64 count = 3;
+}
+message GetStaffInfoRequest{
+    uint64 staffId = 1;
+}
+message GetStaffInfoReply{
+    Error err = 1;
+    StaffInfo StaffInfo = 2;
+}
+message ModifyStaffInfoRequest{
+    string name = 1;
+    string mobile = 2;
+    uint64 shopId = 3;
+    uint64 staffId = 4;
+    bool isRebate = 5;
+    StaffStatus status = 6;
+}
+
+message ModifyStaffInfoReply {
+    Error err = 1;
+    StaffInfo staffInfo = 2;
+}
+
+message RemoveStaffRequest{
+    uint64 staffId = 1;
+}
+
+message RemoveStaffReply {
+    Error err = 1;
+    bool result = 2;
+}
